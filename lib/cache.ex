@@ -65,4 +65,36 @@ defmodule Cache do
   end
   # we could let this fall in the match above but better to handle this client-side.
   def del(_key), do: nil
+
+  @doc """
+  Cache.incr increments the value of a given key.
+  It expects the key to be of integer type.
+  If successful returns {:ok, value} with the new value.
+  Returns {:error, reason} otherwise.
+
+  If the key does not exist, it creates it and increments its value.
+
+  ## Examples
+
+      iex> Cache.incr(:first_key)
+      {:ok, 1}
+
+      iex> Cache.incr(:first_key)
+      {:ok, 2}
+
+      iex> Cache.set(:second_key, "a")
+      iex> Cache.incr(:second_key)
+      {:error, "value is not an integer"}
+
+  """
+  @spec incr(String.t) :: {:ok, integer} | {:error, String.t}
+  def incr(key) do
+    Agent.get_and_update(__MODULE__, fn state ->
+      Map.get_and_update(state, key, fn 
+        nil -> {{:ok, 1}, Map.put(state, key, 1)}
+        value when is_integer(value) -> {{:ok, value + 1}, Map.put(state, key, value + 1)}
+        _value -> {{:error, "value is not an integer"}, state}
+      end)
+    end)
+  end
 end

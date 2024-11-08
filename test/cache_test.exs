@@ -36,4 +36,10 @@ defmodule CacheTest do
     assert Cache.get(:hit) == nil
   end
 
+  test "increment non existing key" do
+    Cache.start()
+    {:ok, value} = Cache.incr(:hit)
+    assert Cache.get(:hit) == 1
+  end
+
 end

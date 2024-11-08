@@ -2,7 +2,8 @@ defmodule CacheTest do
   use ExUnit.Case
   doctest Cache
 
-  test "greets the world" do
-    assert Cache.hello() == :world
+  test "alive" do
+    {:ok, pid} = Cache.start()
+    assert Process.alive?(pid)
   end
 end

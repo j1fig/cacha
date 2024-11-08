@@ -64,5 +64,5 @@ defmodule Cache do
     Agent.update(__MODULE__, fn state -> Map.delete(state, key) end)
   end
   # we could let this fall in the match above but better to handle this client-side.
-  def get(_key), do: nil
+  def del(_key), do: nil
 end

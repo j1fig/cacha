@@ -8,10 +8,19 @@ defmodule Cache do
   Values can be of any type.
   """
 
+  alias Cache.Impl.Command
+
+  @doc """
+  Cache.start initiates the Cache Agent.
+
+  ## Examples
+
+      iex> Cache.start(:a_key, 10)
+      {:ok, PID}
+
+  """
   @spec start() :: {:ok, pid}
-  def start() do
-    Agent.start_link(fn -> %{} end, name: __MODULE__)
-  end
+  defdelegate start(), to: Command
 
   @doc """
   Cache.set creates or updates the value for a given key.
@@ -23,10 +32,7 @@ defmodule Cache do
 
   """
   @spec set(String.t, any) :: :ok | :error
-  def set(key, value) when is_atom(key) or is_binary(key) do
-    Agent.update(__MODULE__, fn state -> Map.put(state, key, value) end)
-  end
-  def set(_key, _value), do: :error
+  defdelegate set(key, value), to: Command
 
   @doc """
   Cache.get returns the value of a given key or nil if it does not exist.
@@ -41,11 +47,7 @@ defmodule Cache do
 
   """
   @spec get(String.t) :: any
-  def get(key) when is_atom(key) or is_binary(key) do
-    Agent.get(__MODULE__, fn state -> Map.get(state, key) end)
-  end
-  # we could let this fall in the match above but better to handle this client-side.
-  def get(_key), do: nil
+  defdelegate get(key), to: Command
 
   @doc """
   Cache.del deletes a given key. It always returns :ok.
@@ -60,11 +62,7 @@ defmodule Cache do
 
   """
   @spec del(String.t) :: :ok
-  def del(key) when is_atom(key) or is_binary(key) do
-    Agent.update(__MODULE__, fn state -> Map.delete(state, key) end)
-  end
-  # we could let this fall in the match above but better to handle this client-side.
-  def del(_key), do: nil
+  defdelegate del(key), to: Command
 
   @doc """
   Cache.incr increments the value of a given key.
@@ -88,13 +86,5 @@ defmodule Cache do
 
   """
   @spec incr(String.t) :: {:ok, integer} | {:error, String.t}
-  def incr(key) do
-    Agent.get_and_update(__MODULE__, fn state ->
-      Map.get_and_update(state, key, fn 
-        nil -> {{:ok, 1}, 1}
-        value when is_integer(value) -> {{:ok, value + 1}, value + 1}
-        _value -> {{:error, "value is not an integer"}, state}
-      end)
-    end)
-  end
+  defdelegate incr(key), to: Command
 end

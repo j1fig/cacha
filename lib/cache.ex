@@ -91,8 +91,8 @@ defmodule Cache do
   def incr(key) do
     Agent.get_and_update(__MODULE__, fn state ->
       Map.get_and_update(state, key, fn 
-        nil -> {{:ok, 1}, Map.put(state, key, 1)}
-        value when is_integer(value) -> {{:ok, value + 1}, Map.put(state, key, value + 1)}
+        nil -> {{:ok, 1}, 1}
+        value when is_integer(value) -> {{:ok, value + 1}, value + 1}
         _value -> {{:error, "value is not an integer"}, state}
       end)
     end)

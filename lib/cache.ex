@@ -31,7 +31,7 @@ defmodule Cache do
       :ok
 
   """
-  @spec set(String.t, any) :: :ok | :error
+  @spec set(String.t(), any) :: :ok | :error
   defdelegate set(key, value), to: Command
 
   @doc """
@@ -46,7 +46,7 @@ defmodule Cache do
       nil
 
   """
-  @spec get(String.t) :: any
+  @spec get(String.t()) :: any
   defdelegate get(key), to: Command
 
   @doc """
@@ -61,7 +61,7 @@ defmodule Cache do
       :ok
 
   """
-  @spec del(String.t) :: :ok
+  @spec del(String.t()) :: :ok
   defdelegate del(key), to: Command
 
   @doc """
@@ -85,6 +85,6 @@ defmodule Cache do
       {:error, "value is not an integer"}
 
   """
-  @spec incr(String.t) :: {:ok, integer} | {:error, String.t}
+  @spec incr(String.t()) :: {:ok, integer} | {:error, String.t()}
   defdelegate incr(key), to: Command
 end

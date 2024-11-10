@@ -49,5 +49,4 @@ defmodule CacheTest do
     Cache.incr(:hit)
     assert Cache.get(:hit) == 3
   end
-
 end

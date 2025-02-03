@@ -25,7 +25,7 @@ defmodule YourApp.Application do
   def start(_type, _args) do
     children = [
       ...,
-      Cacha.Runtime.Server,
+      Cacha.Server,
       ...
     ]
 

@@ -18,7 +18,7 @@ defmodule Cacha.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: { Cacha.Runtime.Server, []},
+      mod: { Cacha.Server, []},
       extra_applications: [:logger]
     ]
   end

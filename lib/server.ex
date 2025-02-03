@@ -1,4 +1,4 @@
-defmodule Cacha.Runtime.Server do
+defmodule Cacha.Server do
   @me __MODULE__
 
   use Agent

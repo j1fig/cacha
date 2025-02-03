@@ -8,7 +8,7 @@ defmodule Cacha do
   Values can be of any type.
   """
 
-  alias Cacha.Runtime.Server
+  alias Cacha.Server
 
   defdelegate start_link(args), to: Server
 

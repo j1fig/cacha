@@ -14,12 +14,26 @@ defmodule Cacha.Server do
   @spec init() :: {:ok, pid}
   def init(), do: %{}
 
-  @spec set(String.t(), any) :: :ok | :error
-  def set(key, value) when is_atom(key) or is_binary(key) do
-    Agent.update(@me, fn state -> Map.put(state, key, value) end)
+  # This spec effectively is meh because it offers little guarantees on
+  # the return values.
+  # It also feels contrived and not really what SET is succintly about.
+  # Considering moving this into a separate GETSET like the ole REDIS API.
+  @spec set(String.t(), any, Keyword.t()) :: :ok | any | {:error, String.t()}
+  def set(key, value, opts \\ [])
+  def set(key, value, opts) when is_atom(key) or is_binary(key) do
+    case Keyword.get(opts, :get) do
+      nil -> Agent.update(@me, fn state -> Map.put(state, key, value) end)
+      true -> Agent.get_and_update(@me, fn
+        state -> Map.get_and_update(state, key, fn
+          nil -> {value, value}
+          old_value -> {old_value, value}
+        end)
+      end)
+      _ -> {:error, "invalid option for :get"}
+    end
   end
 
-  def set(_key, _value), do: :error
+  def set(_key, _value, _opts), do: :error
 
   @spec get(String.t()) :: any
   def get(key) when is_atom(key) or is_binary(key) do

@@ -15,14 +15,26 @@ defmodule Cacha do
   @doc """
   Cacha.set creates or updates the value for a given key.
 
+  Options
+  -------
+
+  :get -  returns the old value present before setting the new one.
+          if the key was empty, it simply returns the current value being set.
+
   ## Examples
 
       iex> Cacha.set(:a_key, 10)
       :ok
 
+      iex> Cacha.set(:a_key, 15, get: true)
+      10
+
+      iex> Cacha.get(:a_key)
+      15
+
   """
-  @spec set(String.t(), any) :: :ok | :error
-  defdelegate set(key, value), to: Server
+  @spec set(String.t(), any, Keyword.t()) :: :ok | :error
+  defdelegate set(key, value, opts \\ []), to: Server
 
   @doc """
   Cacha.get returns the value of a given key or nil if it does not exist.

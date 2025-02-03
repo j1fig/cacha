@@ -19,6 +19,20 @@ defmodule CachaTest do
     assert Cacha.get(:hit) == 10
   end
 
+  test "getset existing key" do
+    Cacha.flush_all()
+    Cacha.set(:hit, 1)
+    
+    assert Cacha.set(:hit, 10, get: true) == 1
+    assert Cacha.get(:hit) == 10
+  end
+
+  test "getset missing key" do
+    Cacha.flush_all()
+    assert Cacha.set(:miss, 10, get: true) == 10
+    assert Cacha.get(:miss) == 10
+  end
+
   test "delete non existing key" do
     Cacha.flush_all()
     assert Cacha.del(:hit) == :ok

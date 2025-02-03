@@ -1,15 +1,17 @@
 defmodule Cacha.MixProject do
   use Mix.Project
 
+  @github_url "https://github.com/j1fig/cacha"
+
   def project do
     [
       app: :cacha,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.17",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       name: "Cacha",
-      source_url: "https://github.com/j1fig/cacha",
+      source_url: @github_url,
       description: description(),
       package: package(),
     ]
@@ -18,7 +20,6 @@ defmodule Cacha.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      mod: { Cacha.Server, []},
       extra_applications: [:logger]
     ]
   end
@@ -36,7 +37,7 @@ defmodule Cacha.MixProject do
   defp package do
     [
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/j1fig/cacha"}
+      links: %{"GitHub" => @github_url}
     ]
   end
 end

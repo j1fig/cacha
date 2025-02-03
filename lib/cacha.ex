@@ -19,7 +19,7 @@ defmodule Cacha do
   -------
 
   :get -  returns the old value present before setting the new one.
-          if the key was empty, it simply returns the current value being set.
+          if the key was empty, `nil` is returned.
 
   ## Examples
 

@@ -29,7 +29,7 @@ defmodule CachaTest do
 
   test "getset missing key" do
     Cacha.flush_all()
-    assert Cacha.set(:miss, 10, get: true) == 10
+    assert Cacha.set(:miss, 10, get: true) == nil
     assert Cacha.get(:miss) == 10
   end
 

@@ -25,7 +25,7 @@ defmodule Cacha.Server do
       nil -> Agent.update(@me, fn state -> Map.put(state, key, value) end)
       true -> Agent.get_and_update(@me, fn
         state -> Map.get_and_update(state, key, fn
-          nil -> {value, value}
+          nil -> {nil, value}
           old_value -> {old_value, value}
         end)
       end)

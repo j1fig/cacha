@@ -20,7 +20,8 @@ defmodule Cacha.Server do
   # Considering moving this into a separate GETSET like the ole REDIS API.
   @spec set(String.t(), any, Keyword.t()) :: :ok | any | {:error, String.t()}
   def set(key, value, opts \\ [])
-  def set(key, value, opts) when is_atom(key) or is_binary(key) do
+  def set(key, value, opts) when is_atom(key), do: set(to_string(key), value, opts)
+  def set(key, value, opts) when is_binary(key) do
     case Keyword.get(opts, :get) do
       nil -> Agent.update(@me, fn state -> Map.put(state, key, value) end)
       true -> Agent.get_and_update(@me, fn
@@ -36,7 +37,8 @@ defmodule Cacha.Server do
   def set(_key, _value, _opts), do: :error
 
   @spec get(String.t()) :: any
-  def get(key) when is_atom(key) or is_binary(key) do
+  def get(key) when is_atom(key), do: key |> to_string |> get
+  def get(key) when is_binary(key) do
     Agent.get(@me, fn state -> Map.get(state, key) end)
   end
 
@@ -44,7 +46,8 @@ defmodule Cacha.Server do
   def get(_key), do: nil
 
   @spec del(String.t()) :: :ok
-  def del(key) when is_atom(key) or is_binary(key) do
+  def del(key) when is_atom(key), do: key |> to_string |> del
+  def del(key) when is_binary(key) do
     Agent.update(@me, fn state -> Map.delete(state, key) end)
   end
 
@@ -52,7 +55,8 @@ defmodule Cacha.Server do
   def del(_key), do: nil
 
   @spec incr(String.t()) :: {:ok, integer} | {:error, String.t()}
-  def incr(key) do
+  def incr(key) when is_atom(key), do: key |> to_string |> incr
+  def incr(key) when is_binary(key) do
     Agent.get_and_update(@me, fn
       state ->
         Map.get_and_update(state, key, fn
@@ -66,5 +70,16 @@ defmodule Cacha.Server do
   @spec flush_all() :: :ok | :error
   def flush_all do
     Agent.update(@me, fn _ -> %{} end)
+  end
+
+  @spec keys(String.t()) :: List[String.t]
+  def keys(prefix \\ "")
+  def keys(""), do: Agent.get(@me, &(Map.keys(&1)))
+  def keys(prefix) when is_binary(prefix) do
+    Agent.get(@me, fn state ->
+      state
+      |> Map.keys
+      |> Enum.filter(&(String.starts_with?(&1, prefix)))
+    end)
   end
 end

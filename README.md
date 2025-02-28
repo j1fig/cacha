@@ -36,6 +36,7 @@ defmodule YourApp.Application do
 
 ## Wishlist
 
+* Key list command.
 * Expiries / TTL support.
 * Dump mode.
 * AOF flush mode.

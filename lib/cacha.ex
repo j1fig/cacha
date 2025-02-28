@@ -91,7 +91,7 @@ defmodule Cacha do
   defdelegate incr(key), to: Server
 
   @doc """
-  Cacha.flush_all deletes all keys from the Cacha.
+  Cacha.flush_all clears the entire cache state.
 
   ## Examples
 
@@ -105,4 +105,18 @@ defmodule Cacha do
   """
   @spec flush_all :: :ok | :error
   defdelegate flush_all(), to: Server
+
+  @doc """
+  Cacha.keys lists all keys matching a given prefix.
+
+  ## Examples
+
+      iex> Cacha.set(:a_key, 10)
+      :ok
+      iex> Cacha.keys("a_k")
+      ["a_key"]
+
+  """
+  @spec keys(String.t) :: List[String.t]
+  defdelegate keys(prefix \\ ""), to: Server
 end

@@ -58,4 +58,25 @@ defmodule CachaTest do
     Cacha.incr(:hit)
     assert Cacha.get(:hit) == 3
   end
+
+  test "key listing when empty" do
+    Cacha.flush_all()
+    assert Cacha.keys() == []
+  end
+
+  test "key listing" do
+    Cacha.flush_all()
+    Cacha.incr(:hit_one)
+    Cacha.incr(:hit_two)
+    assert Cacha.keys() == ["hit_one", "hit_two"]
+  end
+
+  test "key prefix listing" do
+    Cacha.flush_all()
+    Cacha.incr(:hit_one)
+    Cacha.incr(:hit_two)
+    Cacha.incr(:miss_one)
+    Cacha.incr(:miss_two)
+    assert Cacha.keys("hit") == ["hit_one", "hit_two"]
+  end
 end
